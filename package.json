@@ -26,6 +26,8 @@
     },
     "dependencies": {
         "autoprefixer": "^9.8.6",
-        "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2"
+        "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
+        "vue2-datepicker": "^3.8.2",
+        "vuejs-datepicker": "^1.6.2"
     }
 }

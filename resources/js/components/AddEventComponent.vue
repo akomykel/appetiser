@@ -13,14 +13,16 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <label>From</label>
-                    <input type="text" id="dateFrom" name="dateFrom" class="form-control" />
+                    <date-picker v-model="dateFrom" valueType="format" id="dateFrom" name="dateFrom" class="dPicker"></date-picker>
+                    <!-- <input type="text" id="dateFrom" name="dateFrom" class="form-control" /> -->
                 </div>
             </div>
 
             <div class="col-lg-6">
                 <div class="form-group">
                     <label>To</label>
-                    <input type="text" id="dateTo" name="dateTo" class="form-control" />
+                    <date-picker v-model="dateTo" valueType="format" id="dateTo" name="dateTo" class="dPicker"></date-picker>
+                    <!-- <input type="text" id="dateTo" name="dateTo" class="form-control" /> -->
                 </div>
             </div>
         </div>
@@ -103,9 +105,25 @@
 </template>
 
 <script>
+    import Datepicker from 'vue2-datepicker';
+    import 'vue2-datepicker/index.css';
+
     export default {
         mounted() {
             console.log("Add event component mounted")
-        }
+        },
+        data() {
+            return {
+                dateFrom: null,
+                dateTo: null,
+            };
+        },
+        components: { Datepicker },
     }
 </script>
+
+<style>
+    .dPicker {
+        width: 150;
+    }
+</style>

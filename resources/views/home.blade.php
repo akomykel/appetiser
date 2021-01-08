@@ -16,14 +16,7 @@
 
                     <!-- {{ __('You are logged in!') }} -->
                     <div id="main">
-                        <div class="row">
-                            <div class="col-lg-5">
-                                <add-event-component />
-                            </div>
-                            <div class="col-lg-7">
-                                <list-events-component />
-                            </div>
-                        </div>
+                        <calendar-component />
                     </div>
                 </div>
             </div>

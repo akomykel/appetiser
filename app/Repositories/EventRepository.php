@@ -1,22 +1,21 @@
 <?php
 namespace App\Repositories;
 
-use App\Models\Event;
+use App\Models\Eevent;
 
 class EventRepository implements EventInterface
 {
     public function createEvent($request) {
-        $event = new Event();
-        $event->eventTitle = $request->eventTitle;
-        $event->dateFrom = $request->dateFrom;
-        $event->dateTo = $request->dateTo;
-        $event->days = $request->days;
+        $event = Eevent::firstOrNew(['event_title' => $request->eventTitle]);
+        $event->event_date_from = $request->eventDateFrom;
+        $event->event_date_to = $request->eventDateTo;
+        $event->event_days = implode(',',$request->eventDays);
         $event->save();
         return $event;
     }
 
     public function listEvents() {
-        $events = Event::all();
+        $events = Eevent::all();
         return $events;
     }
 }

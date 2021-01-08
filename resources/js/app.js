@@ -7,6 +7,7 @@
 require('./bootstrap');
 
 window.Vue = require('vue').default;
+window.axios = require('axios');
 
 /**
  * The following block of code may be used to automatically register your
@@ -20,8 +21,7 @@ window.Vue = require('vue').default;
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('add-event-component', require('./components/AddEventComponent.vue').default);
-Vue.component('list-events-component', require('./components/ListEventsComponent.vue').default);
+Vue.component('calendar-component', require('./components/CalendarComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -1,5 +1,6 @@
 <template>
     <div>
+        <notifications group="foo" />
         <div class="row">
             <!-- Form -->
             <div class="col-lg-5">
@@ -179,7 +180,7 @@
                                 if(dDay[x] == document.getElementById(`lbl${n}`).innerText){
                                     this.eTitle = this.form.eventTitle;
                                     document.getElementById(`d${n}`).innerText = this.eTitle
-                                    document.getElementById(`res${n}`).style.backgroundColor = "#99C68E"
+                                    document.getElementById(`res${n}`).style.backgroundColor = "#e3fbe3"
                                 }
                             } else {
                                 if(this.days[i] == document.getElementById(`lbl${n}`).innerText){
@@ -190,22 +191,25 @@
                         }
                     }
                 }
+
+                // Vue alert message once success
+                this.$notify({
+                    group: 'foo',
+                    title: '',
+                    text: 'Event successfully saved',
+                    type: 'success',
+                    duration: 10000,
+                });
             },
             submitForm(){
                 this.updateList();
                 axios.post(this.api_url + '/event', this.form)
                     .then(res => {
                         console.log('Saved successfully');
-                        console.log(res);
-                        //this.arrList.push(this.form.eventDays);
-                        //this.showListEvents();
                     })
                     .catch((error) => {
                         console.log('Error found');
                         console.log(error);
-                    })
-                    .finally(() => {
-                        
                     });
             },
         },

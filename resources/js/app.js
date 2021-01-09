@@ -9,6 +9,9 @@ require('./bootstrap');
 window.Vue = require('vue').default;
 window.axios = require('axios');
 
+import Notifications from 'vue-notification'
+Vue.use(Notifications)
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -30,5 +33,5 @@ Vue.component('calendar-component', require('./components/CalendarComponent.vue'
  */
 
 const app = new Vue({
-    el: '#main',
+    el: '#main, #app',
 });

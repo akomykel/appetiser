@@ -19,7 +19,7 @@
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label>From</label>
-                            <date-picker valueType="format" id="dateFrom" name="dateFrom" v-model="form.eventDateFrom"></date-picker>
+                            <date-picker valueType="format" id="dateFrom" name="dateFrom" v-on:change="updateDays" v-model="form.eventDateFrom"></date-picker>
                         </div>
                     </div>
 
@@ -139,8 +139,8 @@
                 mnth: 'January',
                 yr: '2021',
                 numDays: 31,
-                api_url: 'http://localhost:8000/api',
-                days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                api_url: process.env.MIX_LOCAL_API_URL,
+                days: ['Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu'],
                 monthName: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ],
                 form: {
                     eventTitle: '',
@@ -165,13 +165,28 @@
             }
         },
         methods: {
+            sortDays(days) {
+                var splitDate = this.form.eventDateFrom.split("-");
+                var date = new Date(parseInt(splitDate[0])+'-'+parseInt(splitDate[1])+'-'+parseInt('01'));
+                var daysOfWeek = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+                var today = date.getDay();
+                for (var i=0;i<today;i++) daysOfWeek.push(daysOfWeek.shift());
+                return daysOfWeek.filter(function(d) { return days.indexOf(d) >= 0; });
+            },
+            getDaysInMonth(month,year){
+                return new Date(year, month, 0).getDate();
+            },
+            updateDays(){
+                let dFrom = this.form.eventDateFrom.split("-");
+                this.numDays = this.getDaysInMonth(parseInt(dFrom[1]), parseInt(dFrom[0]));
+                this.days = this.sortDays(this.days);
+                this.mnth = this.monthName[parseInt(dFrom[1]) - 1];
+                this.yr = parseInt(dFrom[0]);
+            },
             updateList(){
                 let dFrom = this.form.eventDateFrom.split("-");
                 let dTo = this.form.eventDateTo.split("-");
                 let dDay = this.form.eventDays;
-
-                this.mnth = this.monthName[parseInt(dFrom[1]) - 1];
-                this.yr = parseInt(dFrom[0]);
 
                 for(var n=parseInt(dFrom[2]); n<=parseInt(dTo[2]); n++){
                     for(var x=0; x<dDay.length; x++){
@@ -202,6 +217,7 @@
                 });
             },
             submitForm(){
+                this.updateDays();
                 this.updateList();
                 axios.post(this.api_url + '/event', this.form)
                     .then(res => {

@@ -46,10 +46,10 @@
                                 <div class="col-lg-12">Kindly login using the admin account:</div>
                             </div>
                             <div class="row mt-2">
-                                <div class="col-lg-12"><span>Username: <b>admin</b></span></div>
+                                <div class="col-lg-12"><span>Username: <b>admin@gmail.com</b></span></div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-12"><span>Password: <b>12345</b></span></div>
+                                <div class="col-lg-12"><span>Password: <b>123456789</b></span></div>
                             </div>
                         </div>
                     </div>

@@ -1986,8 +1986,8 @@ __webpack_require__.r(__webpack_exports__);
       mnth: 'January',
       yr: '2021',
       numDays: 31,
-      api_url: 'http://localhost:8000/api',
-      days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      api_url: "http://localhost:8000/api",
+      days: ['Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu'],
       monthName: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
       form: {
         eventTitle: '',
@@ -2015,12 +2015,34 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    sortDays: function sortDays(days) {
+      var splitDate = this.form.eventDateFrom.split("-");
+      var date = new Date(parseInt(splitDate[0]) + '-' + parseInt(splitDate[1]) + '-' + parseInt('01'));
+      var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      var today = date.getDay();
+
+      for (var i = 0; i < today; i++) {
+        daysOfWeek.push(daysOfWeek.shift());
+      }
+
+      return daysOfWeek.filter(function (d) {
+        return days.indexOf(d) >= 0;
+      });
+    },
+    getDaysInMonth: function getDaysInMonth(month, year) {
+      return new Date(year, month, 0).getDate();
+    },
+    updateDays: function updateDays() {
+      var dFrom = this.form.eventDateFrom.split("-");
+      this.numDays = this.getDaysInMonth(parseInt(dFrom[1]), parseInt(dFrom[0]));
+      this.days = this.sortDays(this.days);
+      this.mnth = this.monthName[parseInt(dFrom[1]) - 1];
+      this.yr = parseInt(dFrom[0]);
+    },
     updateList: function updateList() {
       var dFrom = this.form.eventDateFrom.split("-");
       var dTo = this.form.eventDateTo.split("-");
       var dDay = this.form.eventDays;
-      this.mnth = this.monthName[parseInt(dFrom[1]) - 1];
-      this.yr = parseInt(dFrom[0]);
 
       for (var n = parseInt(dFrom[2]); n <= parseInt(dTo[2]); n++) {
         for (var x = 0; x < dDay.length; x++) {
@@ -2051,13 +2073,15 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     submitForm: function submitForm() {
-      this.updateList();
-      axios.post(this.api_url + '/event', this.form).then(function (res) {
-        console.log('Saved successfully');
-      })["catch"](function (error) {
-        console.log('Error found');
-        console.log(error);
-      });
+      this.updateDays();
+      this.updateList(); // axios.post(this.api_url + '/event', this.form)
+      //     .then(res => {
+      //         console.log('Saved successfully');
+      //     })
+      //     .catch((error) => {
+      //         console.log('Error found');
+      //         console.log(error);
+      //     });
     }
   },
   components: {
@@ -38825,6 +38849,7 @@ var render = function() {
                       id: "dateFrom",
                       name: "dateFrom"
                     },
+                    on: { change: _vm.updateDays },
                     model: {
                       value: _vm.form.eventDateFrom,
                       callback: function($$v) {

@@ -112,13 +112,13 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="row border-bottom">
-                            <div class="col-lg-12 p-2"><h2>Jul 2018</h2></div>
+                            <div class="col-lg-12 p-2"><h2>{{mnth}} {{yr}}</h2></div>
                         </div>
 
-                        <div class="row border-bottom" v-for="ad in arrDays" :key="ad.day">
+                        <div class="row border-bottom" v-for="ad in arrDays" :id="`res${ad.day}`" :key="ad.day">
                             <div class="col-lg-1 p-2">{{ ad.day }}</div>
-                            <div class="col-lg-2 p-2">{{ ad.lbl }}</div>
-                            <div class="col-lg-9 p-2"></div>
+                            <div class="col-lg-2 p-2" :id="`lbl${ad.day}`">{{ ad.lbl }}</div>
+                            <div class="col-lg-9 p-2" :id="`d${ad.day}`"></div>
                         </div>
                     </div>
                 </div>
@@ -134,12 +134,18 @@
     export default {
         data() {
             return {
+                eTitle: '',
+                mnth: 'January',
+                yr: '2021',
+                numDays: 31,
                 api_url: 'http://localhost:8000/api',
+                days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                monthName: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ],
                 form: {
                     eventTitle: '',
                     eventDateFrom: '',
                     eventDateTo: '',
-                    eventDays: []
+                    eventDays: [],
                 }
             };
         },
@@ -147,11 +153,10 @@
             arrDays:function(){
                 var x = 0;
                 var arrDays = [];
-                var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-                for(var i=1; i<=31; i++) {
+                for(var i=1; i<=this.numDays; i++) {
                     (x == 7) ? x = 0 : x = x;
-                    arrDays.push({ day:i, lbl:days[x] });
+                    arrDays.push({ day:i, lbl:this.days[x] });
                     x++;
                 }
 
@@ -159,25 +164,50 @@
             }
         },
         methods: {
+            updateList(){
+                let dFrom = this.form.eventDateFrom.split("-");
+                let dTo = this.form.eventDateTo.split("-");
+                let dDay = this.form.eventDays;
+
+                this.mnth = this.monthName[parseInt(dFrom[1]) - 1];
+                this.yr = parseInt(dFrom[0]);
+
+                for(var n=parseInt(dFrom[2]); n<=parseInt(dTo[2]); n++){
+                    for(var x=0; x<dDay.length; x++){
+                        for(var i=0; i<this.days.length; i++){
+                            if(document.getElementById(`chk${this.days[i]}`).checked == true){
+                                if(dDay[x] == document.getElementById(`lbl${n}`).innerText){
+                                    this.eTitle = this.form.eventTitle;
+                                    document.getElementById(`d${n}`).innerText = this.eTitle
+                                    document.getElementById(`res${n}`).style.backgroundColor = "#99C68E"
+                                }
+                            } else {
+                                if(this.days[i] == document.getElementById(`lbl${n}`).innerText){
+                                    document.getElementById(`d${n}`).innerText = "";
+                                    document.getElementById(`res${n}`).style.backgroundColor = "#ffffff"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             submitForm(){
+                this.updateList();
                 axios.post(this.api_url + '/event', this.form)
-                    .then((res) => {
+                    .then(res => {
                         console.log('Saved successfully');
                         console.log(res);
+                        //this.arrList.push(this.form.eventDays);
+                        //this.showListEvents();
                     })
                     .catch((error) => {
                         console.log('Error found');
                         console.log(error);
-                    });
-
-                this.showListEvents()
-            },
-            showListEvents() {
-                axios.get(this.api_url + '/events')
-                    .then((res) => {
-                        console.log(res);
                     })
-            }
+                    .finally(() => {
+                        
+                    });
+            },
         },
         components: { 
             Datepicker 

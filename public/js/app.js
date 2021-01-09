@@ -1981,7 +1981,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
+      eTitle: '',
+      mnth: 'January',
+      yr: '2021',
+      numDays: 31,
       api_url: 'http://localhost:8000/api',
+      days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      monthName: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
       form: {
         eventTitle: '',
         eventDateFrom: '',
@@ -1994,13 +2000,12 @@ __webpack_require__.r(__webpack_exports__);
     arrDays: function arrDays() {
       var x = 0;
       var arrDays = [];
-      var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-      for (var i = 1; i <= 31; i++) {
+      for (var i = 1; i <= this.numDays; i++) {
         x == 7 ? x = 0 : x = x;
         arrDays.push({
           day: i,
-          lbl: days[x]
+          lbl: this.days[x]
         });
         x++;
       }
@@ -2009,20 +2014,42 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    updateList: function updateList() {
+      var dFrom = this.form.eventDateFrom.split("-");
+      var dTo = this.form.eventDateTo.split("-");
+      var dDay = this.form.eventDays;
+      this.mnth = this.monthName[parseInt(dFrom[1]) - 1];
+      this.yr = parseInt(dFrom[0]);
+
+      for (var n = parseInt(dFrom[2]); n <= parseInt(dTo[2]); n++) {
+        for (var x = 0; x < dDay.length; x++) {
+          for (var i = 0; i < this.days.length; i++) {
+            if (document.getElementById("chk".concat(this.days[i])).checked == true) {
+              if (dDay[x] == document.getElementById("lbl".concat(n)).innerText) {
+                this.eTitle = this.form.eventTitle;
+                document.getElementById("d".concat(n)).innerText = this.eTitle;
+                document.getElementById("res".concat(n)).style.backgroundColor = "#99C68E";
+              }
+            } else {
+              if (this.days[i] == document.getElementById("lbl".concat(n)).innerText) {
+                document.getElementById("d".concat(n)).innerText = "";
+                document.getElementById("res".concat(n)).style.backgroundColor = "#ffffff";
+              }
+            }
+          }
+        }
+      }
+    },
     submitForm: function submitForm() {
+      this.updateList();
       axios.post(this.api_url + '/event', this.form).then(function (res) {
         console.log('Saved successfully');
-        console.log(res);
+        console.log(res); //this.arrList.push(this.form.eventDays);
+        //this.showListEvents();
       })["catch"](function (error) {
         console.log('Error found');
         console.log(error);
-      });
-      this.showListEvents();
-    },
-    showListEvents: function showListEvents() {
-      axios.get(this.api_url + '/events').then(function (res) {
-        console.log(res);
-      });
+      })["finally"](function () {});
     }
   },
   components: {
@@ -39243,22 +39270,38 @@ var render = function() {
             "div",
             { staticClass: "col-lg-12" },
             [
-              _vm._m(0),
+              _c("div", { staticClass: "row border-bottom" }, [
+                _c("div", { staticClass: "col-lg-12 p-2" }, [
+                  _c("h2", [_vm._v(_vm._s(_vm.mnth) + " " + _vm._s(_vm.yr))])
+                ])
+              ]),
               _vm._v(" "),
               _vm._l(_vm.arrDays, function(ad) {
                 return _c(
                   "div",
-                  { key: ad.day, staticClass: "row border-bottom" },
+                  {
+                    key: ad.day,
+                    staticClass: "row border-bottom",
+                    attrs: { id: "res" + ad.day }
+                  },
                   [
                     _c("div", { staticClass: "col-lg-1 p-2" }, [
                       _vm._v(_vm._s(ad.day))
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "col-lg-2 p-2" }, [
-                      _vm._v(_vm._s(ad.lbl))
-                    ]),
+                    _c(
+                      "div",
+                      {
+                        staticClass: "col-lg-2 p-2",
+                        attrs: { id: "lbl" + ad.day }
+                      },
+                      [_vm._v(_vm._s(ad.lbl))]
+                    ),
                     _vm._v(" "),
-                    _c("div", { staticClass: "col-lg-9 p-2" })
+                    _c("div", {
+                      staticClass: "col-lg-9 p-2",
+                      attrs: { id: "d" + ad.day }
+                    })
                   ]
                 )
               })
@@ -39270,18 +39313,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row border-bottom" }, [
-      _c("div", { staticClass: "col-lg-12 p-2" }, [
-        _c("h2", [_vm._v("Jul 2018")])
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
